@@ -1,4 +1,4 @@
-import { db} from "../config/db.js";
+import { db } from "../config/db.js";
 
 export async function adicionarLivro(req, res) {
   try {
@@ -17,7 +17,7 @@ export async function adicionarLivro(req, res) {
   }
 };
 
-export async function listarLivros (req, res){
+export async function listarLivros(req, res) {
   try {
     const [rows] = await db.execute("SELECT * FROM livros");
     res.json(rows);
@@ -25,7 +25,7 @@ export async function listarLivros (req, res){
     res.status(500).json({ erro: err.message });
   }
 };
-export async function obterLivro (req, res){
+export async function obterLivro(req, res) {
   try {
     const [rows] = await db.execute("SELECT * FROM livros WHERE idLivro = ?", [
       req.params.id,
@@ -37,7 +37,7 @@ export async function obterLivro (req, res){
     res.status(500).json({ erro: err.message });
   }
 };
-export async function atuallizarLivro(req, res){
+export async function atualizarLivro(req, res) {
   try {
     const { titulo, autor, descricao, disponivel } = req.body;
     await db.execute(
@@ -49,7 +49,7 @@ export async function atuallizarLivro(req, res){
     res.status(500).json({ erro: err.message });
   }
 };
-export async function deletarLivro (req, res){
+export async function deletarLivro(req, res) {
   try {
     await db.execute("DELETE FROM livros WHERE idLivro = ?", [req.params.id]);
     res.json({ mensagem: "Livro deletado com sucesso!" });
@@ -57,10 +57,20 @@ export async function deletarLivro (req, res){
     res.status(500).json({ erro: err.message });
   }
 };
-export async function avaliacaoLivros(req,res){
+export async function avaliacaoLivros(req, res) {
   try {
-    
-  } catch (error) {
-    
+    const [rows] = await db.execute(`
+      SELECT
+        l.titulo,
+        IFNULL(ROUND(AVG(a.nota), 2), 0) AS Media,
+        COUNT(a.idAvaliacoes) AS Total_de_avaliações
+      FROM livros l
+      LEFT JOIN avaliacoes a ON l.idLivro = a.idLivro
+      GROUP BY l.idLivro, l.titulo
+      ORDER BY l.titulo
+    `);
+    return res.json(rows);
+  } catch (err) {
+    return res.status(500).json({ erro: err.message });
   }
 }

@@ -1,7 +1,8 @@
 import express from "express"
 import{
  adicionarLivro,
- atuallizarLivro,
+ atualizarLivro,
+ avaliacaoLivros,
  deletarLivro,
  listarLivros,
  obterLivro,
@@ -14,7 +15,8 @@ const router = express.Router();
 
 router.post("/",adicionarLivro);
 router.get("/", listarLivros);
+router.get("/avaliacoes", avaliacaoLivros)
 router.get("/:id", obterLivro);
-router.put("/:id", atuallizarLivro);
+router.put("/:id", atualizarLivro);
 router.delete("/:id",deletarLivro);
 export default router;
