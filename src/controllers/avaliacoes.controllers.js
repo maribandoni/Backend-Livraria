@@ -17,7 +17,7 @@ export async function criarAvaliacao(req, res) {
 
     await db.execute(
       "INSERT INTO avaliacoes (idUsuario, idLivro, nota, comentario) VALUES (?, ?, ?, ?)",
-      [usuario_id, livro_id, nota, comentario]
+      [idUsuario, idLivro, nota, comentario]
     );
 
     res.json({ mensagem: "Avaliação adicionada com sucesso!" });
